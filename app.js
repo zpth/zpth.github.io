@@ -11,7 +11,7 @@
     { video: true },                                  /* 0 · hero — the App Store preview */
     { live: true,  browse: true },                    /* 1 · modes       — you drive  */
     { reels: true },                                  /* 2 · reels                    */
-    { live: true,  mode: 17 },                        /* 3 · creator     — Iron Filings */
+    { shot: 'shots/creator.jpg' },                    /* 3 · creator — the editor itself */
     { video: true },                                  /* 4 · capture                  */
     { live: true,  mode: 0, ndi: true },              /* 5 · NDI         — Environment*/
     { still: 'shots/voxel.jpg' },                     /* 6 · pro                      */
@@ -64,7 +64,7 @@
     grid.appendChild(g);
   });
 
-  var film = $('#filmstrip');
+  var film = $('#filmstrip'), shotFull = $('#shotfull');
   var reelsBox = $('#reels'), reelTabs = $('#reelTabs'), reelFrame = $('#reelFrame');
   var reel = 0, reelBtns = [];
 
@@ -149,17 +149,19 @@
 
     reelsBox.hidden = !s.reels;
     film.hidden = !s.video;
+    shotFull.hidden = !s.shot;
     if (s.video) { var pr = film.play(); if (pr && pr.catch) pr.catch(function () {}); }
     else { film.pause(); }
+    if (s.shot) shotFull.src = s.shot;
 
     if (s.reels) {
       engine.stop();
       still.hidden = true;
       if (!reelFrame.querySelector('iframe')) mountReel();
-    } else if (s.video) {
+    } else if (s.video || s.shot) {
+      /* fills the whole phone on its own — the app's own UI, not our replica */
       engine.stop();
       still.hidden = true;
-      vpNote.textContent = 'recorded in ZPTH';
     } else if (s.still) {
       still.src = s.still; still.hidden = false;
       canvas.style.visibility = 'hidden';
