@@ -8,30 +8,30 @@
 
   /* what the phone shows for each section */
   var SECTIONS = [
-    { live: true,  mode: 6 },                         /* 0 · hero        — Contour   */
+    { video: true },                                  /* 0 · hero — the App Store preview */
     { live: true,  browse: true },                    /* 1 · modes       — you drive  */
     { reels: true },                                  /* 2 · reels                    */
-    { still: 'shots/creator.jpg' },                   /* 3 · creator                  */
-    { still: 'shots/contour-figure.jpg' },            /* 4 · capture                  */
+    { live: true,  mode: 17 },                        /* 3 · creator     — Iron Filings */
+    { video: true },                                  /* 4 · capture                  */
     { live: true,  mode: 0, ndi: true },              /* 5 · NDI         — Environment*/
     { still: 'shots/voxel.jpg' },                     /* 6 · pro                      */
-    { still: 'shots/hand.jpg' },                      /* 7 · privacy                  */
-    { still: 'shots/raw-glitch.jpg' },                /* 8 · requirements             */
+    { live: true,  mode: 5 },                         /* 7 · privacy     — Data       */
+    { still: 'shots/pinscreen.jpg' },                 /* 8 · requirements             */
     { live: true,  mode: 9 }                          /* 9 · download    — Oil Slick  */
   ];
 
   /* Instagram reels — the iframe is built on demand, never at page load */
   var REELS = [
-    { code: 'Daax3cgBJQ2', who: '@aristides.lab' },
     { code: 'DbiCDH5uVQq', who: '@cybergenic' },
+    { code: 'Daax3cgBJQ2', who: '@aristides.lab' },
     { code: 'DZyBhX5Nh_S', who: '@optictempo' }
   ];
 
-  /* modes we have a real capture for */
+  /* modes we have a real capture for — all from the current App Store listing */
   var SHOTS = {
-    2: 'shots/raw-topo.jpg', 5: 'shots/data.jpg',     6: 'shots/contour-room.jpg',
-    9: 'shots/oilslick.jpg', 12: 'shots/pinscreen.jpg', 13: 'shots/voxel.jpg',
-    18: 'shots/dither.jpg', 19: 'shots/juicy.jpg'
+    2: 'shots/raw-glitch.jpg',  5: 'shots/data.jpg',      6: 'shots/contour-figure.jpg',
+    12: 'shots/pinscreen.jpg', 13: 'shots/voxel.jpg',
+    18: 'shots/dither.jpg',    19: 'shots/juicy.jpg'
   };
 
   var canvas   = $('#gl');
@@ -64,6 +64,7 @@
     grid.appendChild(g);
   });
 
+  var film = $('#filmstrip');
   var reelsBox = $('#reels'), reelTabs = $('#reelTabs'), reelFrame = $('#reelFrame');
   var reel = 0, reelBtns = [];
 
@@ -147,10 +148,18 @@
     tickBtns.forEach(function (b, k) { b.setAttribute('aria-current', k === i ? 'true' : 'false'); });
 
     reelsBox.hidden = !s.reels;
+    film.hidden = !s.video;
+    if (s.video) { var pr = film.play(); if (pr && pr.catch) pr.catch(function () {}); }
+    else { film.pause(); }
+
     if (s.reels) {
       engine.stop();
       still.hidden = true;
       if (!reelFrame.querySelector('iframe')) mountReel();
+    } else if (s.video) {
+      engine.stop();
+      still.hidden = true;
+      vpNote.textContent = 'recorded in ZPTH';
     } else if (s.still) {
       still.src = s.still; still.hidden = false;
       canvas.style.visibility = 'hidden';
@@ -159,7 +168,7 @@
     } else {
       still.hidden = true; still.removeAttribute('src');
       canvas.style.visibility = 'visible';
-      vpNote.textContent = engine.ok ? 'live in your browser' : 'captured in ZPTH';
+      vpNote.textContent = engine.ok ? 'live in your browser*' : 'captured in ZPTH';
       if (typeof s.mode === 'number' && s.mode !== mode) setMode(s.mode, false);
       if (!document.hidden) { engine.resize(); engine.start(); }
     }
@@ -257,10 +266,10 @@
   if (!engine.ok) {
     /* no WebGL — fall back to a real capture so the frame is never empty */
     canvas.style.display = 'none';
-    SECTIONS[0].still = 'shots/contour-room.jpg';
-    SECTIONS[1].still = 'shots/contour-room.jpg';
-    SECTIONS[5].still = 'shots/oilslick.jpg';
-    SECTIONS[9].still = 'shots/oilslick.jpg';
+    SECTIONS[1] = { still: 'shots/contour-room.jpg' };
+    SECTIONS[5] = { still: 'shots/contour-figure.jpg', ndi: true };
+    SECTIONS[7] = { still: 'shots/data.jpg' };
+    SECTIONS[9] = { still: 'shots/juicy.jpg' };
   }
 
   document.documentElement.style.setProperty('--accent', MODES[mode].c);

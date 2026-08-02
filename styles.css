@@ -1,30 +1,43 @@
 /* ZPTH — zpth.github.io
-   No webfonts, no CDNs, no third-party requests: the site collects nothing,
-   same as the app. */
+   Self-hosted JetBrains Mono, no CDNs, no analytics: outside the Reels
+   section the site makes no third-party requests, same as the app. */
+
+@font-face{
+  font-family:'JetBrains Mono'; font-style:normal; font-weight:400; font-display:swap;
+  src:url('fonts/JetBrainsMono-Regular.woff2') format('woff2');
+}
+@font-face{
+  font-family:'JetBrains Mono'; font-style:normal; font-weight:500; font-display:swap;
+  src:url('fonts/JetBrainsMono-Medium.woff2') format('woff2');
+}
+@font-face{
+  font-family:'JetBrains Mono'; font-style:normal; font-weight:600; font-display:swap;
+  src:url('fonts/JetBrainsMono-SemiBold.woff2') format('woff2');
+}
+@font-face{
+  font-family:'JetBrains Mono'; font-style:normal; font-weight:700; font-display:swap;
+  src:url('fonts/JetBrainsMono-Bold.woff2') format('woff2');
+}
 
 :root{
-  --bg:#f4f2ed;
-  --ink:#15150f;
-  --muted:#6d6a61;
-  --subtle:#a8a399;
-  --line:rgba(21,21,15,.11);
-  --card:#ffffff;
-  --frame:#17171b;
+  /* dark, like the app */
+  --bg:#08080a;
+  --ink:#f0ede6;
+  --muted:#8e8a81;
+  --subtle:#57544e;
+  --line:rgba(240,237,230,.13);
+  --card:#111114;
+  --frame:#222228;
   --accent:#ffd23f;
-  --sans:-apple-system,BlinkMacSystemFont,"Helvetica Neue","Segoe UI",Arial,sans-serif;
-  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  --sans:var(--mono);
   --pad:clamp(20px,3.2vw,52px);
   /* phone height, then width derived from it — never rely on aspect-ratio for
      the cross axis of a flex item, it loses to fit-content */
   --ph:min(calc(100dvh - 2*var(--pad) - 58px),780px);
   --pw:calc(var(--ph) * 390 / 844);
 }
-@media (prefers-color-scheme:dark){
-  :root{
-    --bg:#0c0c0e; --ink:#efece5; --muted:#9a958b; --subtle:#5f5b54;
-    --line:rgba(239,236,229,.13); --card:#141417; --frame:#202026;
-  }
-}
+html{color-scheme:dark}
 
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
@@ -120,7 +133,7 @@ img{max-width:100%;display:block}
 }
 .vp-note[hidden]{display:none}
 
-.chrome{flex:1 1 auto;display:flex;flex-direction:column;padding:10px 12px 14px;gap:8px;min-height:0}
+.chrome{flex:1 1 auto;display:flex;flex-direction:column;justify-content:space-evenly;padding:10px 12px 14px;gap:8px;min-height:0}
 
 .strip{
   display:flex;gap:2px;overflow-x:auto;min-width:0;width:100%;scroll-snap-type:x mandatory;
@@ -135,6 +148,13 @@ img{max-width:100%;display:block}
 }
 .strip button:hover{color:#fff}
 .strip button[aria-selected="true"]{background:#fff;color:#000;font-weight:600}
+
+/* the App Store preview, filling the whole phone screen */
+.filmstrip{
+  position:absolute;inset:0;z-index:3;
+  width:100%;height:100%;object-fit:cover;background:#000;display:block;
+}
+.filmstrip[hidden]{display:none}
 
 /* Instagram reels, shown inside the phone. The iframe is only created when the
    Reels section is opened, so nothing reaches instagram.com before that. */
@@ -169,7 +189,7 @@ img{max-width:100%;display:block}
 }
 .row .pill.on{background:rgba(255,255,255,.10);color:var(--accent)}
 
-.keys{background:none;justify-content:center;align-items:center;gap:26px;padding:2px 0;margin-top:auto}
+.keys{background:none;justify-content:center;align-items:center;gap:26px;padding:2px 0}
 .key{display:flex;align-items:center;justify-content:center;color:#fff}
 .key.sm{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.10)}
 .key.shutter{width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.10)}
@@ -200,7 +220,8 @@ img{max-width:100%;display:block}
 .eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted);margin:0 0 12px}
 .lead{font-size:clamp(15px,1.25vw,18px);font-weight:600;line-height:1.32;letter-spacing:-.01em;margin:0 0 12px}
 .body{font-size:13.5px;line-height:1.55;color:var(--muted);margin:0 0 20px;max-width:34ch}
-.fine{font-size:11.5px;line-height:1.5;color:var(--subtle);margin:18px 0 0;max-width:36ch}
+.fine{font-size:11px;line-height:1.55;color:var(--subtle);margin:18px 0 0;max-width:38ch}
+.fine.note{margin-top:8px;color:var(--muted);opacity:.8}
 
 .blk{margin:0 0 20px}
 .lbl{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
@@ -263,7 +284,7 @@ img{max-width:100%;display:block}
   /* stage fills the screen */
   .stage{
     position:fixed;inset:0;
-    padding:calc(env(safe-area-inset-top) + 46px) 0 84px;
+    padding:calc(env(safe-area-inset-top) + 46px) 0 calc(78px + env(safe-area-inset-bottom));
     justify-content:flex-start;
   }
   .phone{

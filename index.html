@@ -5,16 +5,37 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>ZPTH — your iPhone's depth camera as a visual instrument</title>
 <meta name="description" content="ZPTH reads the depth in front of you with the TrueDepth camera or LiDAR scanner and paints it in real time — 30 depth modes, Creator Mode, NDI streaming. Everything on device.">
-<meta name="theme-color" content="#0b0b0d">
+<meta name="theme-color" content="#08080a">
+<link rel="canonical" href="https://zpth.github.io/">
 <link rel="icon" href="icon.png" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta property="og:type" content="website">
-<meta property="og:title" content="ZPTH">
+<meta property="og:site_name" content="ZPTH">
+<meta property="og:title" content="ZPTH — your iPhone's depth camera as a visual instrument">
 <meta property="og:description" content="Your iPhone's depth camera as a living visual instrument. 30 real-time depth modes, Creator Mode and NDI streaming — all on device.">
 <meta property="og:url" content="https://zpth.github.io/">
 <meta property="og:image" content="https://zpth.github.io/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="preload" as="font" type="font/woff2" href="fonts/JetBrainsMono-Regular.woff2" crossorigin>
 <link rel="stylesheet" href="styles.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "ZPTH",
+  "url": "https://zpth.github.io/",
+  "image": "https://zpth.github.io/og.jpg",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "iOS 26.5 or later",
+  "softwareVersion": "3.2",
+  "downloadUrl": "https://apps.apple.com/us/app/zpth/id6777710069",
+  "author": { "@type": "Person", "name": "Aristides Lintzeris" },
+  "description": "ZPTH reads the depth in front of you with the iPhone's TrueDepth camera or LiDAR scanner and paints it in real time — 30 depth modes, Creator Mode and NDI streaming, all on device.",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+}
+</script>
 </head>
 <body>
 
@@ -48,6 +69,11 @@
   <main class="stage">
     <div class="phone">
       <div class="screen">
+
+        <video class="filmstrip" id="filmstrip" poster="preview-poster.jpg"
+               muted loop playsinline preload="metadata" aria-label="ZPTH in use" hidden>
+          <source src="preview.mp4" type="video/mp4">
+        </video>
 
         <div class="reels" id="reels" hidden>
           <div class="reel-tabs" id="reelTabs" role="tablist" aria-label="Reels"></div>
@@ -137,7 +163,8 @@
         <div class="blk"><span class="lbl">Browse — tap any mode</span>
           <div class="modegrid" id="modeGrid"></div>
         </div>
-        <p class="fine">The render above is a browser re-creation running on your GPU, so you can feel how a mode behaves before you install anything. The app runs the real thing on live depth from your camera.</p>
+        <p class="fine">The phone above is running each mode live on your own GPU — over a real photograph and a depth map estimated from it. The app runs the real thing, on live depth straight from your camera.</p>
+        <p class="fine note">*Shaders may appear different inside the app.</p>
       </section>
 
       <!-- 2 -->
@@ -146,8 +173,8 @@
         <h2 class="lead">See it move.</h2>
         <p class="body">Three reels, playing in the phone. Pick one with the tabs, then hit play.</p>
         <div class="blk"><span class="lbl">Playing</span>
-          <p class="val" id="reelWho">@aristides.lab</p>
-          <p class="val"><a id="reelLink" href="https://www.instagram.com/reel/Daax3cgBJQ2/" target="_blank" rel="noreferrer">Open on Instagram ↗</a></p>
+          <p class="val" id="reelWho">@cybergenic</p>
+          <p class="val"><a id="reelLink" href="https://www.instagram.com/reel/DbiCDH5uVQq/" target="_blank" rel="noreferrer">Open on Instagram ↗</a></p>
         </div>
         <p class="fine">Instagram sets its own cookies and receives your IP address when a reel loads. Nothing else on this site talks to a third party.</p>
       </section>
@@ -157,6 +184,10 @@
         <p class="eyebrow">Creator Mode · Pro</p>
         <h2 class="lead">Make your own depth mode.</h2>
         <p class="body">Begin with an empty depth field and stack effect layers grouped by function. Each layer has its own controls, multiplier, opacity and blend mode, so you can mix any effects together.</p>
+        <figure class="realshot">
+          <img src="shots/creator.jpg" alt="The Creator editor, with the Lines layer group open" loading="lazy">
+          <figcaption>The Creator editor</figcaption>
+        </figure>
         <div class="blk"><span class="lbl">Layer groups</span>
           <p class="val">Texture · Lighting · Lines</p>
           <p class="val">Edge · Colour · Bloom</p>
@@ -253,7 +284,7 @@
         <a class="cta" href="https://apps.apple.com/us/app/zpth/id6777710069" target="_blank" rel="noreferrer">Download on the App Store ↗</a>
         <div class="blk"><span class="lbl">More</span>
           <p class="val"><a href="privacy.html">Privacy policy</a></p>
-          <p class="val"><a href="mailto:aristideslintzeris@icloud.com">aristideslintzeris@icloud.com</a></p>
+          <p class="val"><a href="mailto:aristides.lab@proton.me">aristides.lab@proton.me</a></p>
         </div>
         <div class="blk"><span class="lbl">Made by</span>
           <p class="val">Aristides Lintzeris</p>

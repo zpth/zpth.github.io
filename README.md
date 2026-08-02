@@ -11,22 +11,31 @@ as plain files.
 | file | what it is |
 | --- | --- |
 | `index.html` | the whole site — ten sections, driven by wheel / arrows / dots / swipe |
-| `styles.css` | three-column desktop shell, bottom-sheet mobile, light + dark |
-| `depth.js` | live WebGL engine: a synthetic depth field painted by all 30 modes |
+| `styles.css` | three-column desktop shell, bottom-sheet mobile, dark |
+| `depth.js` | live WebGL engine: a photo + its depth map painted by all 30 modes |
 | `app.js` | section navigation, the in-phone mode switcher, reels, mobile sheet |
 | `privacy.html` | privacy policy |
+| `scene.jpg` / `scene-depth.png` | the photograph the live engine runs on, and its depth map |
+| `preview.mp4` | the App Store app preview, transcoded from Apple's HLS |
 | `shots/` | real captures from the app, cropped free of the App Store text overlays |
+| `fonts/` | JetBrains Mono (OFL 1.1, licence included) |
 
 ## The live engine
 
-`depth.js` builds a synthetic depth field in a fragment shader — head and shoulders,
-a doorway, a plant, a sofa — and then paints it with browser re-creations of each of
-the app's 30 depth modes. Tap any mode name in the phone (or in the right-hand list)
-to switch; the render cross-fades the way the app does.
+`depth.js` samples two textures — `scene.jpg` (what the colour camera sees) and
+`scene-depth.png` (0 = nearest, 1 = farthest) — and paints them with browser
+re-creations of each of the app's 30 depth modes. Tap any mode name in the phone (or
+in the right-hand list) to switch; the render cross-fades the way the app does. A slow
+`uCam` drift keeps a still photograph reading as a live feed.
+
+The depth map was estimated offline with Apple's Core ML build of **Depth Anything V2
+(small)** — `apple/coreml-depth-anything-v2-small` on Hugging Face. To swap in a new
+photograph, run that model over it, normalise to 0 = near / 1 = far, and drop the two
+files in. Nothing at runtime needs a model.
 
 It is a re-creation, not the app: the app runs the real thing on live depth from the
-camera. The label in the corner of the viewport says which you are looking at —
-*live in your browser* vs *captured in ZPTH*.
+camera, so shaders may appear different inside it. The label in the corner of the
+viewport says which you are looking at.
 
 Adding a mode means two edits in `depth.js`: an entry in the `MODES` table (name,
 accent colour, description) and a branch in `shade()`. Keep the two in the same order.

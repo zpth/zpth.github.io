@@ -1,7 +1,7 @@
 /* ZPTH — live depth-mode engine.
-   Renders a synthetic depth field (head + shoulders in a room) and paints it with
-   browser re-creations of the app's 30 real-time modes. Everything runs locally in
-   your GPU; the page makes no network requests. */
+   Takes a real photograph and its depth map — estimated offline with Apple's
+   Core ML build of Depth Anything V2 — and paints it with browser re-creations
+   of the app's 30 real-time modes. Everything runs locally on your GPU. */
 (function () {
   'use strict';
 
@@ -51,11 +51,14 @@
   var FRAG = [
     'precision highp float;',
     'varying vec2 vUv;',
-    'uniform vec2  uRes;',
-    'uniform float uT;',
-    'uniform int   uA;',
-    'uniform int   uB;',
-    'uniform float uMix;',
+    'uniform vec2      uRes;',
+    'uniform float     uT;',
+    'uniform int       uA;',
+    'uniform int       uB;',
+    'uniform float     uMix;',
+    'uniform vec3      uCam;',   /* slow drift: xy pan, z zoom */
+    'uniform sampler2D uPhoto;', /* what the colour camera sees */
+    'uniform sampler2D uDepth;', /* 0 = nearest, 1 = farthest  */
     '#define PI 3.14159265',
 
     'float hash21(vec2 p){ p=fract(p*vec2(123.34,456.21)); p+=dot(p,p+45.32); return fract(p.x*p.y); }',
@@ -71,48 +74,14 @@
     '#endif',
     '}',
 
-    /* ---- the synthetic scene: depth 0 (near) .. 1 (far), plus an RGB albedo ---- */
+    /* ---- the scene: a real photograph plus a Core ML monocular depth map ---- */
+    'vec2 tx(vec2 uv){ return clamp((uv-0.5)*uCam.z + 0.5 + uCam.xy, 0.0008, 0.9992); }',
     'void scene(vec2 uv, float detail, out float dep, out vec3 alb){',
-    '  vec2 p = vec2((uv.x-0.5)*0.75, uv.y-0.5);',
-    '  float t = uT;',
-    '  float d; vec3 a;',
-    '  float horiz = -0.02;',
-    '  if(p.y > horiz){',
-    /* back wall + converging side walls, with a little perspective up the wall */
-    '    float sideC = smoothstep(0.10,0.375,abs(p.x));',
-    '    float vert  = 1.0 - smoothstep(-0.02,0.48,p.y);',
-    '    d = 0.95 - 0.32*sideC - 0.05*vert + detail*0.012*fbm(uv*7.0);',
-    '    a = vec3(0.50,0.48,0.45);',
-    '    if(sdBox(p-vec2(-0.215,0.24), vec2(0.052,0.215), 0.012) < 0.0){ d = 1.0; a = vec3(0.06,0.06,0.08); }',
-    '  } else {',
-    '    float k = clamp((horiz-p.y)/0.48, 0.0, 1.0);',
-    '    d = mix(0.90, 0.12, k*0.30 + k*k*0.70);',
-    '    a = vec3(0.40,0.38,0.35);',
-    '  }',
-    /* a sofa on the right, sitting on the floor at mid depth */
-    '  vec2 qs = p - vec2(0.265,-0.30);',
-    '  float sofa = sdBox(qs, vec2(0.115,0.125), 0.045);',
-    '  if(sofa < 0.0){ d = 0.62 - 0.15*smoothstep(0.0,-0.10,sofa); a = vec3(0.42,0.29,0.23); }',
-    /* a plant, lower-left: gives the RGB-driven modes real colour to react to */
-    '  vec2 q1 = p - vec2(-0.285,-0.26);',
-    '  float leaf = length(q1/vec2(0.080,0.125)) - 1.0 + detail*0.30*fbm(q1*24.0);',
-    '  if(leaf < 0.0){ d = 0.50 - 0.06*smoothstep(0.0,-0.20,leaf); a = vec3(0.15,0.44,0.13)*(0.70+0.55*fbm(q1*30.0+3.0)); }',
-    /* the subject: head, neck, shoulders — breathing and swaying a little */
-    '  float br = 0.006*sin(t*1.05);',
-    '  vec2 q = p - vec2(0.013*sin(t*0.42), -0.10 + br);',
-    '  float head  = length((q - vec2(0.0,0.215))/vec2(0.088,0.108)) - 1.0;',
-    '  float neck  = sdBox(q - vec2(0.0,0.115), vec2(0.038,0.058), 0.02);',
-    '  float torso = sdBox(q - vec2(0.0,-0.22), vec2(0.170,0.280), 0.100);',
-    '  float body  = min(min(head,neck),torso);',
-    '  if(body < 0.0){',
-    '    float bul = smoothstep(0.0,-0.085,body);',
-    '    d = 0.40 - 0.115*bul + detail*0.010*fbm(q*26.0);',
-    '    a = (min(head,neck) < 0.0) ? vec3(0.74,0.55,0.44) : vec3(0.18,0.23,0.36);',
-    '  }',
-    '  dep = clamp(d,0.0,1.0); alb = a;',
+    '  vec2 q = tx(uv);',
+    '  dep = texture2D(uDepth, q).r;',
+    '  alb = texture2D(uPhoto, q).rgb;',
     '}',
-
-    'float depthAt(vec2 uv){ float d; vec3 a; scene(uv,0.0,d,a); return d; }',
+    'float depthAt(vec2 uv){ return texture2D(uDepth, tx(uv)).r; }',
     'vec3 getNormal(vec2 uv){',
     '  vec2 e = 1.7/uRes;',
     '  float l=depthAt(uv-vec2(e.x,0.0)), r=depthAt(uv+vec2(e.x,0.0));',
@@ -455,14 +424,52 @@
     gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
 
     this.u = {
-      res: gl.getUniformLocation(pr, 'uRes'),
-      t:   gl.getUniformLocation(pr, 'uT'),
-      a:   gl.getUniformLocation(pr, 'uA'),
-      b:   gl.getUniformLocation(pr, 'uB'),
-      mix: gl.getUniformLocation(pr, 'uMix')
+      res:   gl.getUniformLocation(pr, 'uRes'),
+      t:     gl.getUniformLocation(pr, 'uT'),
+      a:     gl.getUniformLocation(pr, 'uA'),
+      b:     gl.getUniformLocation(pr, 'uB'),
+      mix:   gl.getUniformLocation(pr, 'uMix'),
+      cam:   gl.getUniformLocation(pr, 'uCam'),
+      photo: gl.getUniformLocation(pr, 'uPhoto'),
+      depth: gl.getUniformLocation(pr, 'uDepth')
     };
+
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+    this.texPhoto = this._texture(0, 'scene.jpg');
+    this.texDepth = this._texture(1, 'scene-depth.png');
+    gl.uniform1i(this.u.photo, 0);
+    gl.uniform1i(this.u.depth, 1);
+
     this.ok = true;
     this.resize();
+  };
+
+  /* one texture per unit, grey placeholder until the file lands */
+  Engine.prototype._texture = function (unit, src) {
+    var gl = this.gl, self = this;
+    var tex = gl.createTexture();
+    gl.activeTexture(gl.TEXTURE0 + unit);
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,
+                  new Uint8Array([128, 128, 128, 255]));
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+
+    this.pending = (this.pending || 0) + 1;
+    var img = new Image();
+    img.onload = function () {
+      gl.activeTexture(gl.TEXTURE0 + unit);
+      gl.bindTexture(gl.TEXTURE_2D, tex);
+      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+      self.pending--;
+      if (self.pending === 0) { self.ready = true; self.draw(); }
+    };
+    img.onerror = function () { self.pending--; };
+    img.src = src;
+    return tex;
   };
 
   Engine.prototype._compile = function (type, src) {
@@ -518,12 +525,17 @@
 
   Engine.prototype.draw = function () {
     if (!this.ok) return;
-    var gl = this.gl;
+    var gl = this.gl, t = this.clock;
     gl.uniform2f(this.u.res, this.canvas.width, this.canvas.height);
-    gl.uniform1f(this.u.t, this.clock);
+    gl.uniform1f(this.u.t, t);
     gl.uniform1i(this.u.a, this.mode);
     gl.uniform1i(this.u.b, this.prev);
     gl.uniform1f(this.u.mix, this.mix);
+    /* a slow hand-held drift, so a still photograph still reads as a live feed */
+    gl.uniform3f(this.u.cam,
+      Math.sin(t * 0.21) * 0.012,
+      Math.cos(t * 0.17) * 0.009,
+      0.955 + Math.sin(t * 0.13) * 0.020);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   };
 
