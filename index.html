@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ZPTH — your iPhone's depth camera as a visual instrument</title>
+<meta name="description" content="ZPTH reads the depth in front of you with the TrueDepth camera or LiDAR scanner and paints it in real time — 30 depth modes, Creator Mode, NDI streaming. Everything on device.">
+<meta name="theme-color" content="#0b0b0d">
+<link rel="icon" href="icon.png" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="ZPTH">
+<meta property="og:description" content="Your iPhone's depth camera as a living visual instrument. 30 real-time depth modes, Creator Mode and NDI streaming — all on device.">
+<meta property="og:url" content="https://zpth.github.io/">
+<meta property="og:image" content="https://zpth.github.io/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="shell" id="shell">
+
+  <!-- ─────────────────────────────────────────────────────────  rail (left) -->
+  <aside class="rail">
+    <div class="rail-head">
+      <h1 class="brand">ZPTH</h1>
+      <p class="brand-sub">depth · light · capture</p>
+      <nav class="ticks" id="ticks" aria-label="Sections"></nav>
+    </div>
+
+    <div class="rail-titles" id="railTitles">
+      <div class="rt" data-s="0"><p class="rt-a">ZPTH</p><p class="rt-b">Depth camera</p></div>
+      <div class="rt" data-s="1"><p class="rt-a">Modes</p><p class="rt-b">Thirty, live</p></div>
+      <div class="rt" data-s="2"><p class="rt-a">Reels</p><p class="rt-b">See it move</p></div>
+      <div class="rt" data-s="3"><p class="rt-a">Creator</p><p class="rt-b">Make your own</p></div>
+      <div class="rt" data-s="4"><p class="rt-a">Capture</p><p class="rt-b">Photo &amp; video</p></div>
+      <div class="rt" data-s="5"><p class="rt-a">NDI</p><p class="rt-b">Stream to desktop</p></div>
+      <div class="rt" data-s="6"><p class="rt-a">Pro</p><p class="rt-b">$2, once</p></div>
+      <div class="rt" data-s="7"><p class="rt-a">Privacy</p><p class="rt-b">Nothing leaves</p></div>
+      <div class="rt" data-s="8"><p class="rt-a">Requires</p><p class="rt-b">iPhone only</p></div>
+      <div class="rt" data-s="9"><p class="rt-a">Download</p><p class="rt-b">App Store ↗</p></div>
+    </div>
+
+    <p class="rail-foot">On device · no account · no trackers</p>
+  </aside>
+
+  <!-- ────────────────────────────────────────────────────────  stage (mid) -->
+  <main class="stage">
+    <div class="phone">
+      <div class="screen">
+
+        <div class="reels" id="reels" hidden>
+          <div class="reel-tabs" id="reelTabs" role="tablist" aria-label="Reels"></div>
+          <div class="reel-frame" id="reelFrame">
+            <button class="reel-load" id="reelLoad" type="button">
+              <span class="reel-play" aria-hidden="true">▶</span>
+              <span>Load reel from Instagram</span>
+              <small>Loads video from instagram.com</small>
+            </button>
+          </div>
+        </div>
+
+
+        <div class="statusbar">
+          <span class="sb-time">9:41</span>
+          <span class="sb-dot" aria-hidden="true"></span>
+          <span class="sb-right" aria-hidden="true">
+            <svg width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7.5" width="2.6" height="3.5" rx=".6"/><rect x="4.2" y="5.2" width="2.6" height="5.8" rx=".6"/><rect x="8.4" y="2.6" width="2.6" height="8.4" rx=".6"/><rect x="12.6" y="0" width="2.6" height="11" rx=".6"/></svg>
+            <svg width="16" height="11" viewBox="0 0 16 11"><path d="M8 9.6 5.9 7.4a3 3 0 0 1 4.2 0L8 9.6Zm0-4.3a6 6 0 0 0-4.2 1.7L2.3 5.5a8.1 8.1 0 0 1 11.4 0l-1.5 1.5A6 6 0 0 0 8 5.3Zm0-3.6c-2.8 0-5.4 1-7.3 2.9L-.8 3.1A12.1 12.1 0 0 1 8-.4c3.4 0 6.5 1.3 8.8 3.5l-1.5 1.5A10.3 10.3 0 0 0 8 1.7Z"/></svg>
+            <svg width="25" height="11" viewBox="0 0 25 11"><rect x=".5" y=".5" width="20" height="10" rx="3" fill="none" stroke="currentColor" stroke-opacity=".45"/><rect x="2" y="2" width="15" height="7" rx="1.7"/><path d="M22 4v3a2 2 0 0 0 0-3Z" fill-opacity=".45"/></svg>
+          </span>
+        </div>
+
+        <div class="viewport" id="viewport">
+          <canvas id="gl" aria-label="Live re-creation of a ZPTH depth mode"></canvas>
+          <img class="still" id="still" alt="" hidden>
+          <div class="vp-overlay" id="vpOverlay" hidden>
+            <span class="ndi-dot"></span><span class="ndi-name">ZPTH</span><span class="ndi-tag">NDI · local network</span>
+          </div>
+          <div class="vp-note" id="vpNote">live in your browser</div>
+        </div>
+
+        <div class="chrome">
+          <div class="strip" id="modeStrip" role="tablist" aria-label="Depth modes"></div>
+          <div class="row tone" aria-hidden="true">
+            <span class="pill on">Flat</span><span class="pill">Punch</span><span class="pill">Soft</span>
+          </div>
+          <div class="row keys" aria-hidden="true">
+            <span class="key sm"><svg viewBox="0 0 24 24" width="17" height="17"><path d="M4 9a8 8 0 0 1 13-4m3 10a8 8 0 0 1-13 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M17 2v4h-4M7 22v-4h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="key shutter"><i></i></span>
+            <span class="key sm"><svg viewBox="0 0 24 24" width="17" height="17"><rect x="4" y="7" width="16" height="12" rx="2.5" fill="currentColor"/><path d="M7 4h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <button class="nudge" id="nudge" aria-label="Next section">
+      <svg viewBox="0 0 20 20" width="18" height="18"><path d="M10 4v10m-4-4 4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </main>
+
+  <!-- ────────────────────────────────────────────────────────  panel (right) -->
+  <aside class="panel" id="panel">
+    <div class="sheet-grip" id="sheetGrip" role="button" tabindex="0" aria-label="Show details" aria-expanded="false">
+      <svg viewBox="0 0 20 20" width="18" height="18"><path d="M5 12l5-5 5 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+
+    <div class="panel-scroll">
+
+      <!-- 0 -->
+      <section class="pi" data-s="0">
+        <p class="eyebrow">iPhone · TrueDepth &amp; LiDAR</p>
+        <h2 class="lead">Turn your iPhone's depth camera into a living visual instrument.</h2>
+        <p class="body">ZPTH reads the depth in front of you and paints it in real time. Point it at a face, a room, or your hand and watch the depth become light, contour lines, plasma, chrome, false-colour infrared, a mosaic, or pixel-art dither.</p>
+        <div class="blk"><span class="lbl">In the app</span>
+          <p class="val">30 real-time depth modes</p>
+          <p class="val">Creator Mode — build your own</p>
+          <p class="val">NDI streaming to your desktop</p>
+          <p class="val">Photo &amp; video, straight to Photos</p>
+        </div>
+        <div class="blk"><span class="lbl">Price</span>
+          <p class="val">Free to explore · Pro is $2 once</p>
+        </div>
+        <a class="cta" href="https://apps.apple.com/us/app/zpth/id6777710069" target="_blank" rel="noreferrer">Download on the App Store ↗</a>
+      </section>
+
+      <!-- 1 -->
+      <section class="pi" data-s="1">
+        <p class="eyebrow">Thirty depth modes</p>
+        <h2 class="lead" id="modeName">Contour</h2>
+        <p class="body" id="modeDesc">Depth as a colour spectrum drawn with topographic isolines.</p>
+        <figure class="realshot" id="realShot" hidden>
+          <img id="realShotImg" alt="" loading="lazy">
+          <figcaption>Actual capture from the app</figcaption>
+        </figure>
+        <div class="blk"><span class="lbl">Browse — tap any mode</span>
+          <div class="modegrid" id="modeGrid"></div>
+        </div>
+        <p class="fine">The render above is a browser re-creation running on your GPU, so you can feel how a mode behaves before you install anything. The app runs the real thing on live depth from your camera.</p>
+      </section>
+
+      <!-- 2 -->
+      <section class="pi" data-s="2">
+        <p class="eyebrow">Reels</p>
+        <h2 class="lead">See it move.</h2>
+        <p class="body">Three reels, playing in the phone. Pick one with the tabs, then hit play.</p>
+        <div class="blk"><span class="lbl">Playing</span>
+          <p class="val" id="reelWho">@aristides.lab</p>
+          <p class="val"><a id="reelLink" href="https://www.instagram.com/reel/Daax3cgBJQ2/" target="_blank" rel="noreferrer">Open on Instagram ↗</a></p>
+        </div>
+        <p class="fine">Instagram sets its own cookies and receives your IP address when a reel loads. Nothing else on this site talks to a third party.</p>
+      </section>
+
+      <!-- 3 -->
+      <section class="pi" data-s="3">
+        <p class="eyebrow">Creator Mode · Pro</p>
+        <h2 class="lead">Make your own depth mode.</h2>
+        <p class="body">Begin with an empty depth field and stack effect layers grouped by function. Each layer has its own controls, multiplier, opacity and blend mode, so you can mix any effects together.</p>
+        <div class="blk"><span class="lbl">Layer groups</span>
+          <p class="val">Texture · Lighting · Lines</p>
+          <p class="val">Edge · Colour · Bloom</p>
+        </div>
+        <div class="blk"><span class="lbl">Also</span>
+          <p class="val">Shape how layers fall through near/far depth</p>
+          <p class="val">Import a photo as a depth-projected tileset</p>
+          <p class="val">Save it as a named custom mode and reuse it</p>
+        </div>
+      </section>
+
+      <!-- 4 -->
+      <section class="pi" data-s="4">
+        <p class="eyebrow">Capture</p>
+        <h2 class="lead">Everything saves to your own Photos library.</h2>
+        <div class="blk"><span class="lbl">Controls</span>
+          <p class="val">Tap the shutter for a photo</p>
+          <p class="val">Hold and swipe up to record video</p>
+          <p class="val">Double-tap to switch 3:4 ↔ full-screen 9:16</p>
+          <p class="val">Browse and jump between modes with the on-camera switcher</p>
+        </div>
+        <div class="blk"><span class="lbl">New in 3.2</span>
+          <p class="val">A button beside the shutter cuts to the plain RGB camera and back — even mid-recording. Switch as many times as you like; it stays one continuous file.</p>
+        </div>
+      </section>
+
+      <!-- 5 -->
+      <section class="pi" data-s="5">
+        <p class="eyebrow">NDI streaming · Pro</p>
+        <h2 class="lead">Your iPhone becomes a depth-camera source for your desktop.</h2>
+        <p class="body">Turn on NDI in Settings to broadcast your live preview to NDI receivers — OBS, TouchDesigner, vMix and more — on your local network.</p>
+        <div class="blk"><span class="lbl">Sources</span>
+          <p class="val"><b>ZPTH</b> — your effect</p>
+          <p class="val"><b>ZPTHRGB</b> — the raw camera, optional, alongside it</p>
+        </div>
+        <div class="blk"><span class="lbl">Notes</span>
+          <p class="val">Off by default; you turn it on</p>
+          <p class="val">A Wired mode over USB-C lowers latency</p>
+          <p class="val">Video stays on your own local network</p>
+        </div>
+      </section>
+
+      <!-- 6 -->
+      <section class="pi" data-s="6">
+        <p class="eyebrow">ZPTH Pro</p>
+        <h2 class="lead">$2. One time. No subscription.</h2>
+        <div class="blk"><span class="lbl">Unlocks</span>
+          <p class="val">Every visual mode's settings</p>
+          <p class="val">The colour maps</p>
+          <p class="val">All presets</p>
+          <p class="val">Creator Mode</p>
+          <p class="val">NDI streaming</p>
+        </div>
+        <div class="blk"><span class="lbl">Free forever</span>
+          <p class="val">Every mode is previewable with its first preset, and the universal LiDAR presets are free to use.</p>
+        </div>
+      </section>
+
+      <!-- 7 -->
+      <section class="pi" data-s="7">
+        <p class="eyebrow">Private by design</p>
+        <h2 class="lead">No accounts, no servers, no analytics, no tracking.</h2>
+        <p class="body">Your camera frames are processed on the device and never leave it — unless you save a photo or video to your own library, or turn on NDI to send the preview to your own computer on your local network.</p>
+        <div class="blk"><span class="lbl">Microphone</span>
+          <p class="val">Only the audio-reactive Pulsar and Cymatic modes use it. Off by default, analysed on-device, never recorded or transmitted.</p>
+        </div>
+        <div class="blk"><span class="lbl">App privacy label</span>
+          <p class="val">Data Not Collected</p>
+        </div>
+        <a class="cta ghost" href="privacy.html">Read the privacy policy →</a>
+      </section>
+
+      <!-- 8 -->
+      <section class="pi" data-s="8">
+        <p class="eyebrow">Requirements</p>
+        <h2 class="lead">An iPhone with a depth camera.</h2>
+        <div class="blk"><span class="lbl">Sensors</span>
+          <p class="val">Front TrueDepth camera — iPhone X and later with Face ID</p>
+          <p class="val">Rear LiDAR scanner — Pro models</p>
+        </div>
+        <div class="blk"><span class="lbl">Software</span>
+          <p class="val">iOS 26.5 or later</p>
+          <p class="val">Version 3.2</p>
+        </div>
+        <div class="blk"><span class="lbl">Device</span>
+          <p class="val">iPhone only — the app is not offered on iPad.</p>
+        </div>
+      </section>
+
+      <!-- 9 -->
+      <section class="pi" data-s="9">
+        <p class="eyebrow">Get ZPTH</p>
+        <h2 class="lead">Free to download. Pro is $2, once.</h2>
+        <a class="cta" href="https://apps.apple.com/us/app/zpth/id6777710069" target="_blank" rel="noreferrer">Download on the App Store ↗</a>
+        <div class="blk"><span class="lbl">More</span>
+          <p class="val"><a href="privacy.html">Privacy policy</a></p>
+          <p class="val"><a href="mailto:aristideslintzeris@icloud.com">aristideslintzeris@icloud.com</a></p>
+        </div>
+        <div class="blk"><span class="lbl">Made by</span>
+          <p class="val">Aristides Lintzeris</p>
+        </div>
+        <p class="fine">NDI® is a registered trademark of Vizrt NDI AB.</p>
+      </section>
+
+    </div>
+  </aside>
+</div>
+
+<script src="depth.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
