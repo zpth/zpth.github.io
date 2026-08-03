@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>ZPTH — your iPhone's depth camera as a visual instrument</title>
-<meta name="description" content="ZPTH reads the depth in front of you with the TrueDepth camera or LiDAR scanner and paints it in real time — 30 depth modes, Creator Mode, NDI streaming. Everything on device.">
+<meta name="description" content="ZPTH reads the depth in front of you with the TrueDepth camera or LiDAR scanner and paints it in real time — 45 depth modes, Creator Mode, NDI streaming. Everything on device.">
 <meta name="theme-color" content="#08080a">
 <meta name="google-site-verification" content="18XWrv7DqeHKkIyV-M6-v5PQtlTfLE-e-UGmm1Poluc">
 <link rel="canonical" href="https://zpth.github.io/">
@@ -13,7 +13,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="ZPTH">
 <meta property="og:title" content="ZPTH — your iPhone's depth camera as a visual instrument">
-<meta property="og:description" content="Your iPhone's depth camera as a living visual instrument. 30 real-time depth modes, Creator Mode and NDI streaming — all on device.">
+<meta property="og:description" content="Your iPhone's depth camera as a living visual instrument. 45 real-time depth modes, Creator Mode and NDI streaming — all on device.">
 <meta property="og:url" content="https://zpth.github.io/">
 <meta property="og:image" content="https://zpth.github.io/og.jpg">
 <meta property="og:image:width" content="1200">
@@ -33,7 +33,7 @@
   "softwareVersion": "3.2",
   "downloadUrl": "https://apps.apple.com/us/app/zpth/id6777710069",
   "author": { "@type": "Person", "name": "Aristides Lintzeris" },
-  "description": "ZPTH reads the depth in front of you with the iPhone's TrueDepth camera or LiDAR scanner and paints it in real time — 30 depth modes, Creator Mode and NDI streaming, all on device.",
+  "description": "ZPTH reads the depth in front of you with the iPhone's TrueDepth camera or LiDAR scanner and paints it in real time — 45 depth modes, Creator Mode and NDI streaming, all on device.",
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
 }
 </script>
@@ -52,7 +52,7 @@
 
     <div class="rail-titles" id="railTitles">
       <div class="rt" data-s="0"><p class="rt-a">ZPTH</p><p class="rt-b">Depth camera</p></div>
-      <div class="rt" data-s="1"><p class="rt-a">Modes</p><p class="rt-b">Thirty, live</p></div>
+      <div class="rt" data-s="1"><p class="rt-a">Modes</p><p class="rt-b">Forty-five, live</p></div>
       <div class="rt" data-s="2"><p class="rt-a">Reels</p><p class="rt-b">See it move</p></div>
       <div class="rt" data-s="3"><p class="rt-a">Creator</p><p class="rt-b">Make your own</p></div>
       <div class="rt" data-s="4"><p class="rt-a">Capture</p><p class="rt-b">Photo &amp; video</p></div>
@@ -61,6 +61,7 @@
       <div class="rt" data-s="7"><p class="rt-a">Privacy</p><p class="rt-b">Nothing leaves</p></div>
       <div class="rt" data-s="8"><p class="rt-a">Requires</p><p class="rt-b">iPhone only</p></div>
       <div class="rt" data-s="9"><p class="rt-a">Download</p><p class="rt-b">App Store ↗</p></div>
+      <div class="rt" data-s="10"><p class="rt-a">Reference</p><p class="rt-b">Every setting</p></div>
     </div>
 
     <p class="rail-foot">On device · no account · no trackers</p>
@@ -130,6 +131,23 @@
     </button>
   </main>
 
+  <!-- ──────────────────────────────────────────────  reference (full width) -->
+  <section class="docs" id="docs" hidden aria-label="Settings reference">
+    <header class="docs-head">
+      <p class="eyebrow">Reference</p>
+      <h2 class="docs-title">Every setting in ZPTH, and what it does.</h2>
+      <p class="docs-sub" id="docsCount"></p>
+    </header>
+
+    <nav class="docs-pills" id="docsPills" role="tablist" aria-label="Choose a depth mode"></nav>
+
+    <div class="docs-body" id="docsBody"></div>
+
+    <p class="docs-foot">Pulled from the app's own settings screens. Ranges are the actual
+      slider limits. Some controls only appear on a particular camera, or once a related
+      toggle is on.</p>
+  </section>
+
   <!-- ────────────────────────────────────────────────────────  panel (right) -->
   <aside class="panel" id="panel">
     <div class="sheet-grip" id="sheetGrip" role="button" tabindex="0" aria-label="Show details" aria-expanded="false">
@@ -144,7 +162,7 @@
         <h2 class="lead">Turn your iPhone's depth camera into a living visual instrument.</h2>
         <p class="body">ZPTH reads the depth in front of you and paints it in real time. Point it at a face, a room, or your hand and watch the depth become light, contour lines, plasma, chrome, false-colour infrared, a mosaic, or pixel-art dither.</p>
         <div class="blk"><span class="lbl">In the app</span>
-          <p class="val">30 real-time depth modes</p>
+          <p class="val">45 real-time depth modes</p>
           <p class="val">Creator Mode — build your own</p>
           <p class="val">NDI streaming to your desktop</p>
           <p class="val">Photo &amp; video, straight to Photos</p>
@@ -157,7 +175,7 @@
 
       <!-- 1 -->
       <section class="pi" data-s="1">
-        <p class="eyebrow">Thirty depth modes</p>
+        <p class="eyebrow">Forty-five depth modes</p>
         <h2 class="lead" id="modeName">Contour</h2>
         <p class="body" id="modeDesc">Depth as a colour spectrum drawn with topographic isolines.</p>
         <figure class="realshot" id="realShot" hidden>
@@ -297,6 +315,7 @@
 </div>
 
 <script src="depth.js"></script>
+<script src="docs-data.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

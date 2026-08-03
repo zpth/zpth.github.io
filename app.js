@@ -17,7 +17,8 @@
     { still: 'shots/voxel.jpg' },                     /* 6 · pro                      */
     { live: true,  mode: 5 },                         /* 7 · privacy     — Data       */
     { still: 'shots/pinscreen.jpg' },                 /* 8 · requirements             */
-    { live: true,  mode: 9 }                          /* 9 · download    — Oil Slick  */
+    { live: true,  mode: 9 },                         /* 9 · download    — Oil Slick  */
+    { docs: true }                                    /* 10 · reference — no phone    */
   ];
 
   /* Instagram reels — the iframe is built on demand, never at page load */
@@ -65,6 +66,7 @@
   });
 
   var film = $('#filmstrip'), shotFull = $('#shotfull');
+  var docsBox = $('#docs'), docsPills = $('#docsPills'), docsBodyEl = $('#docsBody');
   var reelsBox = $('#reels'), reelTabs = $('#reelTabs'), reelFrame = $('#reelFrame');
   var reel = 0, reelBtns = [];
 
@@ -147,6 +149,16 @@
     panelRows.forEach(function (r, k) { r.classList.toggle('on', k === i); });
     tickBtns.forEach(function (b, k) { b.setAttribute('aria-current', k === i ? 'true' : 'false'); });
 
+    /* the reference tab replaces the phone entirely */
+    docsBox.hidden = !s.docs;
+    document.body.classList.toggle('docs-on', !!s.docs);
+    if (s.docs) {
+      engine.stop(); film.pause();
+      reelsBox.hidden = true; shotFull.hidden = true;
+      buildDocs();
+      return;
+    }
+
     reelsBox.hidden = !s.reels;
     film.hidden = !s.video;
     shotFull.hidden = !s.shot;
@@ -178,6 +190,100 @@
     overlay.hidden = !s.ndi;
     panel.classList.remove('open');
     $('#sheetGrip').setAttribute('aria-expanded', 'false');
+  }
+
+  /* ────────────────────────────────────────────── reference (settings docs) */
+  var DOCS = window.ZPTH_DOCS || { modes: [], globals: [] };
+  var docsPick = -1;          /* -1 = Universal, else index into DOCS.modes */
+  var docsReady = false;
+
+  function el(tag, cls, txt) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (txt != null) e.textContent = txt;
+    return e;
+  }
+
+  function table(rows) {
+    var t = el('table', 'docs-tbl');
+    var thead = el('thead'), hr = el('tr');
+    ['Setting', 'Type', 'Range', 'What it does'].forEach(function (h, i) {
+      var th = el('th', null, h);
+      if (i === 3) th.style.width = '100%';
+      hr.appendChild(th);
+    });
+    thead.appendChild(hr); t.appendChild(thead);
+    var tb = el('tbody');
+    rows.forEach(function (r) {
+      var tr = el('tr');
+      tr.appendChild(el('td', 'c-name', r.label));
+      tr.appendChild(el('td', 'c-kind', r.kind));
+      tr.appendChild(el('td', 'c-range' + (r.range ? '' : ' is-none'), r.range ? r.range.replace('..', ' – ') : '—'));
+      var d = el('td', 'c-desc', r.desc || '');
+      if (r.options && r.options.length) d.appendChild(el('span', 'opts', r.options.join(' · ')));
+      tr.appendChild(d);
+      tb.appendChild(tr);
+    });
+    t.appendChild(tb);
+    return t;
+  }
+
+  function renderDocs() {
+    docsBodyEl.innerHTML = '';
+    docsBodyEl.scrollTop = 0;
+
+    if (docsPick < 0) {                       /* ── Universal ── */
+      docsBodyEl.appendChild(el('h3', 'docs-mode', 'Universal'));
+      docsBodyEl.appendChild(el('p', 'docs-desc',
+        'Settings that apply everywhere, whichever mode you are in. Every mode also keeps ' +
+        'three presets of its own, and the LiDAR presets sit on top of all of them.'));
+      DOCS.globals.forEach(function (g) {
+        docsBodyEl.appendChild(el('p', 'docs-group', g.group));
+        docsBodyEl.appendChild(table(g.rows));
+      });
+      return;
+    }
+
+    var m = DOCS.modes[docsPick], meta = MODES[docsPick] || {};
+    docsBodyEl.appendChild(el('h3', 'docs-mode', meta.n || m.id));
+    if (meta.mono) docsBodyEl.appendChild(el('span', 'docs-tag', 'Monocular · any iPhone, either camera'));
+    if (meta.d) docsBodyEl.appendChild(el('p', 'docs-desc', meta.d));
+    (m.notes || []).forEach(function (n) { docsBodyEl.appendChild(el('p', 'docs-note', n)); });
+    if (!m.controls.length) docsBodyEl.appendChild(el('p', 'docs-desc', 'This mode has no settings of its own.'));
+    else docsBodyEl.appendChild(table(m.controls));
+  }
+
+  function pickDocs(i) {
+    docsPick = i;
+    Array.prototype.forEach.call(docsPills.children, function (b) {
+      if (b.tagName === 'BUTTON') b.setAttribute('aria-selected', (+b.dataset.i === i) ? 'true' : 'false');
+    });
+    if (i >= 0 && MODES[i]) document.documentElement.style.setProperty('--accent', MODES[i].c);
+    renderDocs();
+  }
+
+  function buildDocs() {
+    if (docsReady) return;
+    docsReady = true;
+
+    var total = DOCS.modes.reduce(function (a, m) { return a + m.controls.length; }, 0) +
+                DOCS.globals.reduce(function (a, g) { return a + g.rows.length; }, 0);
+    $('#docsCount').textContent =
+      DOCS.modes.length + ' depth modes · ' + total + ' settings. Pick a mode to see its controls.';
+
+    var uni = el('button', null, 'Universal');
+    uni.type = 'button'; uni.dataset.i = -1; uni.setAttribute('role', 'tab');
+    uni.addEventListener('click', function () { pickDocs(-1); });
+    docsPills.appendChild(uni);
+    docsPills.appendChild(el('span', 'sep'));
+
+    DOCS.modes.forEach(function (m, i) {
+      var b = el('button', null, (MODES[i] && MODES[i].n) || m.id);
+      b.type = 'button'; b.dataset.i = i; b.setAttribute('role', 'tab');
+      b.addEventListener('click', function () { pickDocs(i); });
+      docsPills.appendChild(b);
+    });
+    pickDocs(-1);
   }
 
   /* ───────────────────────────────────────────────────────────── navigation */
