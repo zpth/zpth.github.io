@@ -251,6 +251,15 @@
     (m.notes || []).forEach(function (n) { docsBodyEl.appendChild(el('p', 'docs-note', n)); });
     if (!m.controls.length) docsBodyEl.appendChild(el('p', 'docs-desc', 'This mode has no settings of its own.'));
     else docsBodyEl.appendChild(table(m.controls));
+
+    /* every monocular mode also carries the shared Mono Depth block */
+    if (m.mono && DOCS.monoShared) {
+      docsBodyEl.appendChild(el('p', 'docs-group', 'Mono Depth · shared by all 15 monocular modes'));
+      (DOCS.monoShared.notes || []).forEach(function (n) {
+        docsBodyEl.appendChild(el('p', 'docs-note', n));
+      });
+      docsBodyEl.appendChild(table(DOCS.monoShared.rows));
+    }
   }
 
   function pickDocs(i) {
@@ -267,7 +276,8 @@
     docsReady = true;
 
     var total = DOCS.modes.reduce(function (a, m) { return a + m.controls.length; }, 0) +
-                DOCS.globals.reduce(function (a, g) { return a + g.rows.length; }, 0);
+                DOCS.globals.reduce(function (a, g) { return a + g.rows.length; }, 0) +
+                ((DOCS.monoShared && DOCS.monoShared.rows.length) || 0);
     $('#docsCount').textContent =
       DOCS.modes.length + ' depth modes · ' + total + ' settings. Pick a mode to see its controls.';
 

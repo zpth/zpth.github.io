@@ -5,6 +5,29 @@ import json, pathlib, sys
 
 RAW = json.load(open("modes_raw.json"))["modes"]
 
+# The 15 monocular modes were moved out of SettingsSheet's switch into concrete Views
+# (MonoSettingsSections.swift), so they are parsed separately and override what is here.
+MONO = json.load(open("mono_raw.json"))
+RAW.update(MONO["modes"])
+MONO_GLOBALS = MONO["monoGlobals"]
+MONO_IDS = set(MONO["modes"])
+
+# numeric pickers whose options are built from a Swift range, not literal Text()
+NUMERIC_OPTS = {
+ ("aperture", "Iris Blades"): ["Circular", "5 blades", "6", "7", "8", "9"],
+ ("nebula", "Octaves"): ["1", "2", "3", "4"],
+ ("motes", "Layers"): ["3", "4", "5", "6"],
+ ("woodblock", "Hatch Levels"): ["1", "2", "3", "4"],
+ ("stipple", "Levels"): ["2", "3", "4", "5"],
+ ("papercut", "Plates"): ["3", "4", "5", "6", "7", "8"],
+ ("riso", "Plates"): ["2", "3", "4"],
+}
+for mid, mdata in MONO["modes"].items():
+    for c in mdata["controls"]:
+        k = (mid, c["label"])
+        if k in NUMERIC_OPTS:
+            c["options"] = NUMERIC_OPTS[k]
+
 # ── descriptions, keyed "mode|Label"; "*|Label" is the shared fallback ───────
 D = {
 # shared ---------------------------------------------------------------------
@@ -34,6 +57,48 @@ D = {
 "*|Light": "Colour of the light source.",
 "*|Size Variance": "How much individual elements differ in size.",
 "*|Depth Bands": "Terraces the depth into discrete layers instead of a smooth ramp.",
+# ── Wave-9 shared "Mono Depth" block (all 15 monocular modes) ───────────────
+"mono|Stability": "Trades flicker for responsiveness in the neural depth. Higher is steadier, lower reacts faster.",
+"mono|Edge Snap": "Pulls the estimated depth back onto real image edges, sharpening object boundaries.",
+"mono|Depth Curve": "Redistributes contrast between the near subject and the far background.",
+"mono|Focus Plane": "Which depth the mode treats as its subject.",
+"mono|Focus Band": "How wide a slice around that plane still counts as the subject.",
+"mono|Relief": "Exaggerates the depth surface before the mode reads it.",
+"mono|Edge Sensitivity": "How large a depth step has to be to count as an edge.",
+"mono|Depth Scale": "Scales the whole depth field, making the scene read deeper or flatter.",
+"mono|Sun Azimuth": "Direction of the virtual sun that lights the depth field.",
+"mono|Sun Elevation": "How high that sun sits. Low angles rake across the relief.",
+"mono|Depth Near": "Colour of the nearest depth, on the Custom palette.",
+"mono|Depth Far": "Colour of the farthest depth, on the Custom palette.",
+"mono|Depth Ambient": "Fill light on the depth field, so surfaces facing away are not pure black.",
+"mono|Depth Edges": "Weight of the edge lines drawn on the depth field.",
+"mono|Inference Rate": "How often the neural depth model runs. Lower rates save battery and heat.",
+
+# ── new per-mode controls ───────────────────────────────────────────────────
+"*|Depth Palette": "Which built-in palette colours the depth field. Each mode ships a different one so fifteen depth-driven modes do not read as fifteen shades of the same blue.",
+"parallax|Orbit Shape": "Path the virtual camera travels.",
+"parallax|Quality": "How many steps the reprojection takes. Fewer is faster.",
+"parallax|Edges": "What happens at the frame edge as the camera moves — zoom in to hide it, or fade it out.",
+"anaglyph|Encoding": "How the two eyes are combined. Dubois is the cleanest red/cyan; Wiggle needs no glasses.",
+"aperture|Iris Blades": "Shape of the iris, which is the shape out-of-focus highlights take.",
+"aperture|Focus": "How focus is chosen: set by hand, automatically on the nearest subject, racked between two distances, or slowly breathing.",
+"nebula|Octaves": "How many layers of noise build the cloud. More is more detailed and slower.",
+"nebula|Steps": "Raymarching steps through the cloud — the heaviest setting in the app.",
+"motes|Layers": "How many depth strata the particles are spread across.",
+"woodblock|Hatch Levels": "How many passes of cross-hatching build up the darks.",
+"woodblock|Tone From": "Which signal sets the tone: the camera image, the depth shading, or both.",
+"stipple|Levels": "How many dot sizes the tone is quantised to.",
+"lattice|Scan": "Direction the scanning band travels through depth, or off entirely.",
+"lattice|Fill": "What sits behind the wireframe: nothing, the dimmed scene, or flat shading.",
+"godlight|Samples": "How many steps each shaft is marched. More is smoother and slower.",
+"papercut|Plates": "How many paper layers the depth is cut into.",
+"papercut|Palette": "Which set of paper colours the plates are cut from.",
+"papercut|Colour From": "Whether plate colour comes from the palette, from the scene, or a mix of both.",
+"riso|Plates": "How many ink plates are printed.",
+"riso|Screen": "Shape of the halftone cell on each plate.",
+"vertigo|Curve": "How the dolly moves: a continuous sine, a triangle, or a single shot.",
+"vertigo|Pivot": "What the zoom pivots around — the centre of the frame, or the subject.",
+
 "dither|Sparkle Colour": "Colour of the sparkles that fire along edges.",
 "motes|Wind Speed": "How fast the motes drift on the wind.",
 "riso|Tone Curve": "How grey values map onto ink coverage on each plate.",
@@ -551,8 +616,19 @@ for m in MODE_ORDER:
             if "range" in c: e["range"] = f"{c['range'][0]}..{c['range'][1]}"
             if c.get("options"): e["options"] = c["options"]
             ctrls.append(e)
-    out.append({"id": m, "controls": ctrls,
-                "notes": [b.replace("\\n", " ").strip() for b in raw["blurbs"]]})
+    entry = {"id": m, "controls": ctrls,
+             "notes": [b.replace("\\n", " ").strip() for b in raw["blurbs"]]}
+    if m in MONO_IDS: entry["mono"] = True
+    out.append(entry)
+
+mono_rows = []
+for c in MONO_GLOBALS["controls"]:
+    d = D.get("mono|" + c["label"]) or D.get("*|" + c["label"]) or ""
+    if not d: missing.append("monoGlobals|" + c["label"])
+    e = {"label": c["label"], "kind": c["kind"], "desc": d}
+    if "range" in c: e["range"] = f"{c['range'][0]}..{c['range'][1]}"
+    if c.get("options"): e["options"] = c["options"]
+    mono_rows.append(e)
 
 print("controls:", sum(len(m["controls"]) for m in out))
 print("missing descriptions:", len(missing))
@@ -560,7 +636,10 @@ for k in missing[:60]: print("   ", k)
 
 js = ("/* Generated from the app's SettingsSheet.swift — every control the app shows,\n"
       "   with a short description of what it does. */\n"
-      "window.ZPTH_DOCS = " + json.dumps({"modes": out, "globals": [
+      "window.ZPTH_DOCS = " + json.dumps({"modes": out,
+        "monoShared": {"rows": mono_rows,
+                       "notes": [b.replace("\\n"," ").strip() for b in MONO_GLOBALS["blurbs"]]},
+        "globals": [
         {"group": g, "rows": [{"label": l, "kind": k, "desc": d} for l, k, d in rows]}
         for g, rows in GLOBALS]}, indent=1) + ";\n")
 pathlib.Path(sys.argv[1]).write_text(js)

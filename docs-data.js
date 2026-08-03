@@ -2062,6 +2062,23 @@ window.ZPTH_DOCS = {
    "id": "parallax",
    "controls": [
     {
+     "label": "Depth Palette",
+     "kind": "picker",
+     "desc": "Which built-in palette colours the depth field. Each mode ships a different one so fifteen depth-driven modes do not read as fifteen shades of the same blue.",
+     "options": [
+      "Ice",
+      "Ember",
+      "Jade",
+      "Amber",
+      "Violet",
+      "Copper",
+      "Mono",
+      "Cyan",
+      "Rose",
+      "Custom"
+     ]
+    },
+    {
      "label": "Scene Mix",
      "kind": "slider",
      "desc": "Blends between the pure depth field (0) and the camera image (1).",
@@ -2080,10 +2097,39 @@ window.ZPTH_DOCS = {
      "range": "0.02..2"
     },
     {
+     "label": "Orbit Shape",
+     "kind": "picker",
+     "desc": "Path the virtual camera travels.",
+     "options": [
+      "Circle",
+      "Lissajous",
+      "Sway"
+     ]
+    },
+    {
+     "label": "Quality",
+     "kind": "picker",
+     "desc": "How many steps the reprojection takes. Fewer is faster.",
+     "options": [
+      "Fast (8)",
+      "Normal (12)",
+      "Best (16)"
+     ]
+    },
+    {
      "label": "Infill Softness",
      "kind": "slider",
      "desc": "Softens the areas revealed behind objects, which have no real pixels to show.",
      "range": "0..1"
+    },
+    {
+     "label": "Edges",
+     "kind": "picker",
+     "desc": "What happens at the frame edge as the camera moves \u2014 zoom in to hide it, or fade it out.",
+     "options": [
+      "Zoom",
+      "Fade"
+     ]
     },
     {
      "label": "Zoom",
@@ -2098,16 +2144,46 @@ window.ZPTH_DOCS = {
      "range": "0..1"
     }
    ],
-   "notes": []
+   "notes": [],
+   "mono": true
   },
   {
    "id": "anaglyph",
    "controls": [
     {
+     "label": "Depth Palette",
+     "kind": "picker",
+     "desc": "Which built-in palette colours the depth field. Each mode ships a different one so fifteen depth-driven modes do not read as fifteen shades of the same blue.",
+     "options": [
+      "Ice",
+      "Ember",
+      "Jade",
+      "Amber",
+      "Violet",
+      "Copper",
+      "Mono",
+      "Cyan",
+      "Rose",
+      "Custom"
+     ]
+    },
+    {
      "label": "Scene Mix",
      "kind": "slider",
      "desc": "Blends between the pure depth field (0) and the camera image (1).",
      "range": "0..1"
+    },
+    {
+     "label": "Encoding",
+     "kind": "picker",
+     "desc": "How the two eyes are combined. Dubois is the cleanest red/cyan; Wiggle needs no glasses.",
+     "options": [
+      "Dubois",
+      "Retro",
+      "Mono",
+      "Wiggle",
+      "Side-by-Side"
+     ]
     },
     {
      "label": "Baseline",
@@ -2142,11 +2218,29 @@ window.ZPTH_DOCS = {
    ],
    "notes": [
     "Convergence sets which depth sits AT the screen \u2014 nearer pops out, farther recedes. Wiggle needs no glasses."
-   ]
+   ],
+   "mono": true
   },
   {
    "id": "aperture",
    "controls": [
+    {
+     "label": "Depth Palette",
+     "kind": "picker",
+     "desc": "Which built-in palette colours the depth field. Each mode ships a different one so fifteen depth-driven modes do not read as fifteen shades of the same blue.",
+     "options": [
+      "Ice",
+      "Ember",
+      "Jade",
+      "Amber",
+      "Violet",
+      "Copper",
+      "Mono",
+      "Cyan",
+      "Rose",
+      "Custom"
+     ]
+    },
     {
      "label": "Scene Mix",
      "kind": "slider",
@@ -2158,6 +2252,19 @@ window.ZPTH_DOCS = {
      "kind": "slider",
      "desc": "How wide the lens opens, and so how shallow the depth of field is.",
      "range": "0..1"
+    },
+    {
+     "label": "Iris Blades",
+     "kind": "picker",
+     "desc": "Shape of the iris, which is the shape out-of-focus highlights take.",
+     "options": [
+      "Circular",
+      "5 blades",
+      "6",
+      "7",
+      "8",
+      "9"
+     ]
     },
     {
      "label": "Blade Rotation",
@@ -2176,6 +2283,17 @@ window.ZPTH_DOCS = {
      "kind": "slider",
      "desc": "How much bright points blow out into bokeh discs.",
      "range": "0..1"
+    },
+    {
+     "label": "Focus",
+     "kind": "picker",
+     "desc": "How focus is chosen: set by hand, automatically on the nearest subject, racked between two distances, or slowly breathing.",
+     "options": [
+      "Manual",
+      "Auto",
+      "Rack",
+      "Breathe"
+     ]
     },
     {
      "label": "Rack From",
@@ -2202,11 +2320,29 @@ window.ZPTH_DOCS = {
      "range": "0..1"
     }
    ],
-   "notes": []
+   "notes": [],
+   "mono": true
   },
   {
    "id": "nebula",
    "controls": [
+    {
+     "label": "Depth Palette",
+     "kind": "picker",
+     "desc": "Which built-in palette colours the depth field. Each mode ships a different one so fifteen depth-driven modes do not read as fifteen shades of the same blue.",
+     "options": [
+      "Ice",
+      "Ember",
+      "Jade",
+      "Amber",
+      "Violet",
+      "Copper",
+      "Mono",
+      "Cyan",
+      "Rose",
+      "Custom"
+     ]
+    },
     {
      "label": "Scene Mix",
      "kind": "slider",
@@ -2226,10 +2362,31 @@ window.ZPTH_DOCS = {
      "range": "0.5..8"
     },
     {
+     "label": "Octaves",
+     "kind": "picker",
+     "desc": "How many layers of noise build the cloud. More is more detailed and slower.",
+     "options": [
+      "1",
+      "2",
+      "3",
+      "4"
+     ]
+    },
+    {
      "label": "Threshold",
      "kind": "slider",
      "desc": "How dense the noise must be before it becomes visible cloud.",
      "range": "0..0.9"
+    },
+    {
+     "label": "Steps",
+     "kind": "picker",
+     "desc": "Raymarching steps through the cloud \u2014 the heaviest setting in the app.",
+     "options": [
+      "Fast (8)",
+      "Normal (16)",
+      "Best (24)"
+     ]
     },
     {
      "label": "Wind Speed",
@@ -2274,11 +2431,29 @@ window.ZPTH_DOCS = {
    ],
    "notes": [
     "The heaviest mode in the app \u2014 a real raymarch. Drop Steps if the phone gets hot."
-   ]
+   ],
+   "mono": true
   },
   {
    "id": "motes",
    "controls": [
+    {
+     "label": "Depth Palette",
+     "kind": "picker",
+     "desc": "Which built-in palette colours the depth field. Each mode ships a different one so fifteen depth-driven modes do not read as fifteen shades of the same blue.",
+     "options": [
+      "Ice",
+      "Ember",
+      "Jade",
+      "Amber",
+      "Violet",
+      "Copper",
+      "Mono",
+      "Cyan",
+      "Rose",
+      "Custom"
+     ]
+    },
     {
      "label": "Scene Mix",
      "kind": "slider",
@@ -2356,6 +2531,17 @@ window.ZPTH_DOCS = {
      "range": "0..1"
     },
     {
+     "label": "Layers",
+     "kind": "picker",
+     "desc": "How many depth strata the particles are spread across.",
+     "options": [
+      "3",
+      "4",
+      "5",
+      "6"
+     ]
+    },
+    {
      "label": "Twinkle",
      "kind": "slider",
      "desc": "Speed at which individual sparkles blink on and off.",
@@ -2368,11 +2554,29 @@ window.ZPTH_DOCS = {
      "range": "0..1"
     }
    ],
-   "notes": []
+   "notes": [],
+   "mono": true
   },
   {
    "id": "woodblock",
    "controls": [
+    {
+     "label": "Depth Palette",
+     "kind": "picker",
+     "desc": "Which built-in palette colours the depth field. Each mode ships a different one so fifteen depth-driven modes do not read as fifteen shades of the same blue.",
+     "options": [
+      "Ice",
+      "Ember",
+      "Jade",
+      "Amber",
+      "Violet",
+      "Copper",
+      "Mono",
+      "Cyan",
+      "Rose",
+      "Custom"
+     ]
+    },
     {
      "label": "Scene Mix",
      "kind": "slider",
@@ -2398,6 +2602,17 @@ window.ZPTH_DOCS = {
      "range": "0..1"
     },
     {
+     "label": "Hatch Levels",
+     "kind": "picker",
+     "desc": "How many passes of cross-hatching build up the darks.",
+     "options": [
+      "1",
+      "2",
+      "3",
+      "4"
+     ]
+    },
+    {
      "label": "Hatch Angle",
      "kind": "slider",
      "desc": "Angle the hatching runs at.",
@@ -2408,6 +2623,16 @@ window.ZPTH_DOCS = {
      "kind": "slider",
      "desc": "How strictly lines follow the form rather than the fixed angle.",
      "range": "0..1"
+    },
+    {
+     "label": "Tone From",
+     "kind": "picker",
+     "desc": "Which signal sets the tone: the camera image, the depth shading, or both.",
+     "options": [
+      "Image",
+      "Shading",
+      "Both"
+     ]
     },
     {
      "label": "Tone Curve",
@@ -2450,11 +2675,29 @@ window.ZPTH_DOCS = {
      "desc": "Colour of the paper the ink is printed on."
     }
    ],
-   "notes": []
+   "notes": [],
+   "mono": true
   },
   {
    "id": "stipple",
    "controls": [
+    {
+     "label": "Depth Palette",
+     "kind": "picker",
+     "desc": "Which built-in palette colours the depth field. Each mode ships a different one so fifteen depth-driven modes do not read as fifteen shades of the same blue.",
+     "options": [
+      "Ice",
+      "Ember",
+      "Jade",
+      "Amber",
+      "Violet",
+      "Copper",
+      "Mono",
+      "Cyan",
+      "Rose",
+      "Custom"
+     ]
+    },
     {
      "label": "Scene Mix",
      "kind": "slider",
@@ -2492,16 +2735,21 @@ window.ZPTH_DOCS = {
      "range": "0..1"
     },
     {
-     "label": "Ellipticity",
-     "kind": "slider",
-     "desc": "Stretches dots into ellipses along that curvature.",
-     "range": "0..1"
-    },
-    {
      "label": "Edge Crowding",
      "kind": "slider",
      "desc": "Packs extra dots along silhouettes.",
      "range": "0..1.5"
+    },
+    {
+     "label": "Levels",
+     "kind": "picker",
+     "desc": "How many dot sizes the tone is quantised to.",
+     "options": [
+      "2",
+      "3",
+      "4",
+      "5"
+     ]
     },
     {
      "label": "Jitter",
@@ -2532,11 +2780,29 @@ window.ZPTH_DOCS = {
      "desc": "Colour of the paper the ink is printed on."
     }
    ],
-   "notes": []
+   "notes": [],
+   "mono": true
   },
   {
    "id": "lattice",
    "controls": [
+    {
+     "label": "Depth Palette",
+     "kind": "picker",
+     "desc": "Which built-in palette colours the depth field. Each mode ships a different one so fifteen depth-driven modes do not read as fifteen shades of the same blue.",
+     "options": [
+      "Ice",
+      "Ember",
+      "Jade",
+      "Amber",
+      "Violet",
+      "Copper",
+      "Mono",
+      "Cyan",
+      "Rose",
+      "Custom"
+     ]
+    },
     {
      "label": "Scene Mix",
      "kind": "slider",
@@ -2580,6 +2846,17 @@ window.ZPTH_DOCS = {
      "range": "0..1"
     },
     {
+     "label": "Scan",
+     "kind": "picker",
+     "desc": "Direction the scanning band travels through depth, or off entirely.",
+     "options": [
+      "Near\u2192Far",
+      "Far\u2192Near",
+      "Ping-Pong",
+      "Off"
+     ]
+    },
+    {
      "label": "Scan Speed",
      "kind": "slider",
      "desc": "How fast the scan sweeps through depth.",
@@ -2598,6 +2875,16 @@ window.ZPTH_DOCS = {
      "range": "0.02..1"
     },
     {
+     "label": "Fill",
+     "kind": "picker",
+     "desc": "What sits behind the wireframe: nothing, the dimmed scene, or flat shading.",
+     "options": [
+      "None",
+      "Scene",
+      "Shaded"
+     ]
+    },
+    {
      "label": "Fill Opacity",
      "kind": "slider",
      "desc": "Opacity of the fill behind the wireframe.",
@@ -2614,11 +2901,29 @@ window.ZPTH_DOCS = {
      "desc": "Colour of the wireframe."
     }
    ],
-   "notes": []
+   "notes": [],
+   "mono": true
   },
   {
    "id": "datamosh",
    "controls": [
+    {
+     "label": "Depth Palette",
+     "kind": "picker",
+     "desc": "Which built-in palette colours the depth field. Each mode ships a different one so fifteen depth-driven modes do not read as fifteen shades of the same blue.",
+     "options": [
+      "Ice",
+      "Ember",
+      "Jade",
+      "Amber",
+      "Violet",
+      "Copper",
+      "Mono",
+      "Cyan",
+      "Rose",
+      "Custom"
+     ]
+    },
     {
      "label": "Scene Mix",
      "kind": "slider",
@@ -2682,11 +2987,29 @@ window.ZPTH_DOCS = {
    ],
    "notes": [
     "Depth Bias 0 keeps near objects sharp and melts the background; 1 does the reverse. I-Frame Rate 0 never resets \u2014 it will dissolve completely."
-   ]
+   ],
+   "mono": true
   },
   {
    "id": "aerial",
    "controls": [
+    {
+     "label": "Depth Palette",
+     "kind": "picker",
+     "desc": "Which built-in palette colours the depth field. Each mode ships a different one so fifteen depth-driven modes do not read as fifteen shades of the same blue.",
+     "options": [
+      "Ice",
+      "Ember",
+      "Jade",
+      "Amber",
+      "Violet",
+      "Copper",
+      "Mono",
+      "Cyan",
+      "Rose",
+      "Custom"
+     ]
+    },
     {
      "label": "Scene Mix",
      "kind": "slider",
@@ -2760,11 +3083,29 @@ window.ZPTH_DOCS = {
    ],
    "notes": [
     "Real atmospheric scattering \u2014 point it down a street or out of a window. Needs distance to work; indoors it will look subtle."
-   ]
+   ],
+   "mono": true
   },
   {
    "id": "godlight",
    "controls": [
+    {
+     "label": "Depth Palette",
+     "kind": "picker",
+     "desc": "Which built-in palette colours the depth field. Each mode ships a different one so fifteen depth-driven modes do not read as fifteen shades of the same blue.",
+     "options": [
+      "Ice",
+      "Ember",
+      "Jade",
+      "Amber",
+      "Violet",
+      "Copper",
+      "Mono",
+      "Cyan",
+      "Rose",
+      "Custom"
+     ]
+    },
     {
      "label": "Scene Mix",
      "kind": "slider",
@@ -2788,6 +3129,16 @@ window.ZPTH_DOCS = {
      "kind": "slider",
      "desc": "Overall brightness of the shafts.",
      "range": "0..2.5"
+    },
+    {
+     "label": "Samples",
+     "kind": "picker",
+     "desc": "How many steps each shaft is marched. More is smoother and slower.",
+     "options": [
+      "Fast (24)",
+      "Normal (40)",
+      "Best (64)"
+     ]
     },
     {
      "label": "Source Threshold",
@@ -2833,11 +3184,29 @@ window.ZPTH_DOCS = {
    ],
    "notes": [
     "On the front camera the sun moves behind your head automatically (Rim), so the shafts halo your hair."
-   ]
+   ],
+   "mono": true
   },
   {
    "id": "hologram",
    "controls": [
+    {
+     "label": "Depth Palette",
+     "kind": "picker",
+     "desc": "Which built-in palette colours the depth field. Each mode ships a different one so fifteen depth-driven modes do not read as fifteen shades of the same blue.",
+     "options": [
+      "Ice",
+      "Ember",
+      "Jade",
+      "Amber",
+      "Violet",
+      "Copper",
+      "Mono",
+      "Cyan",
+      "Rose",
+      "Custom"
+     ]
+    },
     {
      "label": "Scene Mix",
      "kind": "slider",
@@ -2923,16 +3292,69 @@ window.ZPTH_DOCS = {
    ],
    "notes": [
     "Depth Phase bends the interference lines around the form \u2014 at 0 they lie flat on the screen like CRT scanlines."
-   ]
+   ],
+   "mono": true
   },
   {
    "id": "papercut",
    "controls": [
     {
+     "label": "Depth Palette",
+     "kind": "picker",
+     "desc": "Which built-in palette colours the depth field. Each mode ships a different one so fifteen depth-driven modes do not read as fifteen shades of the same blue.",
+     "options": [
+      "Ice",
+      "Ember",
+      "Jade",
+      "Amber",
+      "Violet",
+      "Copper",
+      "Mono",
+      "Cyan",
+      "Rose",
+      "Custom"
+     ]
+    },
+    {
      "label": "Scene Mix",
      "kind": "slider",
      "desc": "Blends between the pure depth field (0) and the camera image (1).",
      "range": "0..1"
+    },
+    {
+     "label": "Plates",
+     "kind": "picker",
+     "desc": "How many paper layers the depth is cut into.",
+     "options": [
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8"
+     ]
+    },
+    {
+     "label": "Palette",
+     "kind": "picker",
+     "desc": "Which set of paper colours the plates are cut from.",
+     "options": [
+      "Matisse",
+      "Diorama",
+      "Kirigami",
+      "Riso Stack",
+      "Dusk"
+     ]
+    },
+    {
+     "label": "Colour From",
+     "kind": "picker",
+     "desc": "Whether plate colour comes from the palette, from the scene, or a mix of both.",
+     "options": [
+      "Palette",
+      "Scene",
+      "Both"
+     ]
     },
     {
      "label": "Deckle",
@@ -2985,16 +3407,54 @@ window.ZPTH_DOCS = {
    ],
    "notes": [
     "Plate boundaries are placed at the natural gaps in the depth histogram, not at even intervals \u2014 that is what makes the cuts land on real objects. On the front camera you get your own dedicated top plate.  Scene Mix only applies when Colour From is set to Scene or Both \u2014 on Palette the plates take their colour from the palette and no image is read at all."
-   ]
+   ],
+   "mono": true
   },
   {
    "id": "riso",
    "controls": [
     {
+     "label": "Depth Palette",
+     "kind": "picker",
+     "desc": "Which built-in palette colours the depth field. Each mode ships a different one so fifteen depth-driven modes do not read as fifteen shades of the same blue.",
+     "options": [
+      "Ice",
+      "Ember",
+      "Jade",
+      "Amber",
+      "Violet",
+      "Copper",
+      "Mono",
+      "Cyan",
+      "Rose",
+      "Custom"
+     ]
+    },
+    {
      "label": "Scene Mix",
      "kind": "slider",
      "desc": "Blends between the pure depth field (0) and the camera image (1).",
      "range": "0..1"
+    },
+    {
+     "label": "Plates",
+     "kind": "picker",
+     "desc": "How many ink plates are printed.",
+     "options": [
+      "2",
+      "3",
+      "4"
+     ]
+    },
+    {
+     "label": "Screen",
+     "kind": "picker",
+     "desc": "Shape of the halftone cell on each plate.",
+     "options": [
+      "Dot",
+      "Line",
+      "Square"
+     ]
     },
     {
      "label": "Screen Frequency",
@@ -3071,11 +3531,29 @@ window.ZPTH_DOCS = {
    ],
    "notes": [
     "Split Tone Sources makes each plate read a different signal (image / shading / edges) \u2014 the reason riso colours never quite describe the same thing."
-   ]
+   ],
+   "mono": true
   },
   {
    "id": "vertigo",
    "controls": [
+    {
+     "label": "Depth Palette",
+     "kind": "picker",
+     "desc": "Which built-in palette colours the depth field. Each mode ships a different one so fifteen depth-driven modes do not read as fifteen shades of the same blue.",
+     "options": [
+      "Ice",
+      "Ember",
+      "Jade",
+      "Amber",
+      "Violet",
+      "Copper",
+      "Mono",
+      "Cyan",
+      "Rose",
+      "Custom"
+     ]
+    },
     {
      "label": "Scene Mix",
      "kind": "slider",
@@ -3093,6 +3571,25 @@ window.ZPTH_DOCS = {
      "kind": "slider",
      "desc": "How fast the effect breathes in and out.",
      "range": "0.02..2"
+    },
+    {
+     "label": "Curve",
+     "kind": "picker",
+     "desc": "How the dolly moves: a continuous sine, a triangle, or a single shot.",
+     "options": [
+      "Sine",
+      "Triangle",
+      "One-Shot"
+     ]
+    },
+    {
+     "label": "Pivot",
+     "kind": "picker",
+     "desc": "What the zoom pivots around \u2014 the centre of the frame, or the subject.",
+     "options": [
+      "Frame Centre",
+      "Subject"
+     ]
     },
     {
      "label": "Edge Blend",
@@ -3114,9 +3611,111 @@ window.ZPTH_DOCS = {
    ],
    "notes": [
     "Negative Amount reverses the dolly. Background Only leaves the subject completely untouched and only breathes the room behind \u2014 the flattering setting for selfies."
-   ]
+   ],
+   "mono": true
   }
  ],
+ "monoShared": {
+  "rows": [
+   {
+    "label": "Stability",
+    "kind": "slider",
+    "desc": "Trades flicker for responsiveness in the neural depth. Higher is steadier, lower reacts faster.",
+    "range": "0..1"
+   },
+   {
+    "label": "Edge Snap",
+    "kind": "slider",
+    "desc": "Pulls the estimated depth back onto real image edges, sharpening object boundaries.",
+    "range": "0..1"
+   },
+   {
+    "label": "Depth Curve",
+    "kind": "slider",
+    "desc": "Redistributes contrast between the near subject and the far background.",
+    "range": "0..1"
+   },
+   {
+    "label": "Focus Plane",
+    "kind": "slider",
+    "desc": "Which depth the mode treats as its subject.",
+    "range": "0..1"
+   },
+   {
+    "label": "Focus Band",
+    "kind": "slider",
+    "desc": "How wide a slice around that plane still counts as the subject.",
+    "range": "0.02..1"
+   },
+   {
+    "label": "Relief",
+    "kind": "slider",
+    "desc": "Exaggerates the depth surface before the mode reads it.",
+    "range": "0..1"
+   },
+   {
+    "label": "Edge Sensitivity",
+    "kind": "slider",
+    "desc": "How large a depth step has to be to count as an edge.",
+    "range": "0..1"
+   },
+   {
+    "label": "Depth Scale",
+    "kind": "slider",
+    "desc": "Scales the whole depth field, making the scene read deeper or flatter.",
+    "range": "0.1..4"
+   },
+   {
+    "label": "Sun Azimuth",
+    "kind": "slider",
+    "desc": "Direction of the virtual sun that lights the depth field.",
+    "range": "0..360"
+   },
+   {
+    "label": "Sun Elevation",
+    "kind": "slider",
+    "desc": "How high that sun sits. Low angles rake across the relief.",
+    "range": "0..90"
+   },
+   {
+    "label": "Depth Near",
+    "kind": "colour",
+    "desc": "Colour of the nearest depth, on the Custom palette."
+   },
+   {
+    "label": "Depth Far",
+    "kind": "colour",
+    "desc": "Colour of the farthest depth, on the Custom palette."
+   },
+   {
+    "label": "Depth Ambient",
+    "kind": "slider",
+    "desc": "Fill light on the depth field, so surfaces facing away are not pure black.",
+    "range": "0..1"
+   },
+   {
+    "label": "Depth Edges",
+    "kind": "slider",
+    "desc": "Weight of the edge lines drawn on the depth field.",
+    "range": "0..1.5"
+   },
+   {
+    "label": "Inference Rate",
+    "kind": "picker",
+    "desc": "How often the neural depth model runs. Lower rates save battery and heat.",
+    "options": [
+     "Auto",
+     "60 fps",
+     "30 fps",
+     "15 fps",
+     "8 fps"
+    ]
+   }
+  ],
+  "notes": [
+   "Depth comes from an on-device neural model, not the LiDAR sensor \u2014 these modes work on any iPhone and on both cameras. Stability trades flicker for responsiveness; Depth Curve redistributes contrast between the near subject and the far background.  Every mode ships DEPTH-DRIVEN: it renders the depth field itself, lit by the virtual sun, with the camera contributing nothing. Each mode has its own Depth Palette so they don't all look alike; Near/Far below apply to the Custom palette. Raise a mode's Scene Mix to blend the live image back in."
+  ]
+ },
  "globals": [
   {
    "group": "Output",
