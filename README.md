@@ -26,7 +26,18 @@ as plain files.
 `depth.js` samples two textures — `scene.jpg` (what the colour camera sees) and
 `scene-depth.png` (0 = nearest, 1 = farthest) — and paints them with browser
 re-creations of each of the app's 45 depth modes — including the Wave-9 monocular
-family, which in the app gets its depth from the same Depth Anything V2 model used here. Tap any mode name in the phone (or
+family, which in the app gets its depth from the same Depth Anything V2 model used here.
+
+The 15 monocular modes are **depth-driven**, matching the app's defaults: they render the
+depth field itself via `monoBase()` — a port of `mdDepthBase` / `mdBasePalette`, Lambert-lit
+by the virtual sun at 135°/45° with ambient 0.30 and edge 0.55 — and the camera contributes
+nothing. Each carries its own Depth Palette, taken from the app's per-mode defaults
+(Parallax Ice, Anaglyph Mono, Aperture Amber, Nebula Violet, Motes Ember, Woodblock Mono,
+Stipple Mono, Lattice Cyan, Datamosh Rose, Aerial Ice, Godlight Amber, Hologram Cyan,
+Papercut Mono, Riso Mono, Vertigo Copper).
+
+`monoBase()` calls `getNormal()`, so it **must** be declared after it — GLSL ES 1.00 has no
+forward declarations, and putting it earlier fails the whole program, not just those modes. Tap any mode name in the phone (or
 in the right-hand list) to switch; the render cross-fades the way the app does. A slow
 `uCam` drift keeps a still photograph reading as a live feed.
 
